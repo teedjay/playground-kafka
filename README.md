@@ -2,6 +2,11 @@
 Small tests for Kafka 0.11 consumer api and streaming api, 
 showing how to send, pull and stream messages using Java 8.
 
+Kafka 0.11 has some nice new features like exactly-once semantics
+and atomic writes using the new transaction API.  Read more about
+these feature in this excellent article 
+[Exactly-once Semantics are Possible: Here’s How Kafka Does it](https://www.confluent.io/blog/exactly-once-semantics-are-possible-heres-how-apache-kafka-does-it/).
+
 ## Prerequisite 
 In order to run these small examples you need a running Kafka broker on 
 localhost port 9092 with a topic called ```test-topic```.
