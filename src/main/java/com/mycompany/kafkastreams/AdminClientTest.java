@@ -12,7 +12,7 @@ import org.apache.kafka.clients.admin.ListTopicsResult;
  *
  * @author thore
  */
-public class TestAdminClient {
+public class AdminClientTest {
     
     public static void main(String[] args) throws InterruptedException, ExecutionException {
         Properties config = new Properties();

@@ -38,9 +38,9 @@ docker ps -a (lists all docker containers, even those not running)
 There are two consumer examples, they connect to the broker using different group.id / application.id
 so they will both receive all messages and they can be run in parallel.
 
-- [ ] TestAdminClient, connects to broker and list topics and cluster info
+- [ ] AdminClientTest, connects to broker and list topics and cluster info
 - [ ] TestProducer, connects to broker and send x messages of y size
-- [ ] TestConsumer, connects to broker and pulls messages
+- [ ] PollConsumer, connects to broker and pulls messages
 - [ ] StreamConsumer, connects to broker and streams messages
 
 

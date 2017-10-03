@@ -11,11 +11,11 @@ import org.apache.kafka.clients.consumer.KafkaConsumer;
  *
  * @author thore
  */
-public class TestConsumer {
+public class PollConsumer {
 
     private final Properties props;
 
-    public TestConsumer() {
+    public PollConsumer() {
         props = new Properties();
         props.put("bootstrap.servers", "localhost:9092");
         props.put("group.id", "test-group-consumer");
@@ -39,7 +39,7 @@ public class TestConsumer {
     }
 
     public static void main(String[] args) {
-        TestConsumer tp = new TestConsumer();
+        PollConsumer tp = new PollConsumer();
         tp.receive(1000L);
     }
 

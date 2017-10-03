@@ -1,0 +1,33 @@
+@startuml
+
+' Install PlantUML plugin for IntelliJ IDEA to render this.
+' Full PlantUML usage at http://plantuml.com/commons
+
+skinparam titleBorderRoundCorner 15
+skinparam titleBorderThickness 2
+skinparam titleBorderColor red
+skinparam titleBackgroundColor yellow
+
+title Kafka example explained
+
+Actor PollConsumer as pc
+Actor StreamConsumer as sc
+Actor TestProducer as tp
+
+loop 1000 times
+    tp -> Kafka : post message to test-topic
+    tp -> tp : print timing info
+end
+
+group consumers
+    loop
+        sc <- Kafka : stream from test-topic
+        sc -> sc : print message details
+    end
+    loop
+        pc <- Kafka : poll from test-topic
+        pc -> pc : print message details
+    end
+end
+
+@enduml
