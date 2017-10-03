@@ -10,22 +10,23 @@ skinparam titleBackgroundColor yellow
 
 title Kafka example explained
 
-Actor PollConsumer as pc
-Actor StreamConsumer as sc
-Actor TestProducer as tp
+participant PollConsumer as pc
+participant StreamConsumer as sc
+participant TestProducer as tp
+participant Kafka as k << test-topic >>
 
 loop 1000 times
-    tp -> Kafka : post message to test-topic
+    tp -> k : post message to test-topic
     tp -> tp : print timing info
 end
 
 group consumers
     loop
-        sc <- Kafka : stream from test-topic
+        sc <- k : stream from test-topic
         sc -> sc : print message details
     end
     loop
-        pc <- Kafka : poll from test-topic
+        pc <- k : poll from test-topic
         pc -> pc : print message details
     end
 end
