@@ -1,12 +1,8 @@
 package com.mycompany.kafkastreams;
 
-import org.apache.kafka.clients.admin.AdminClient;
-import org.apache.kafka.clients.admin.AdminClientConfig;
-import org.apache.kafka.clients.admin.DescribeClusterResult;
-import org.apache.kafka.clients.admin.ListTopicsResult;
+import org.apache.kafka.clients.admin.*;
 
 import java.util.Properties;
-import java.util.concurrent.ExecutionException;
 
 /**
  * Connects to the Kafka broker and list available topics and cluster topology
@@ -15,16 +11,32 @@ import java.util.concurrent.ExecutionException;
  */
 public class AdminClientTest {
     
-    public static void main(String[] args) throws InterruptedException, ExecutionException {
+    public static void main(String[] args) throws Exception {
+
         Properties config = new Properties();
         config.put(AdminClientConfig.BOOTSTRAP_SERVERS_CONFIG, "er-ts-appqa04.os.eon.no:9092");
         AdminClient admin = AdminClient.create(config);
         
         ListTopicsResult topics = admin.listTopics();
-        topics.names().get().forEach(p -> System.out.printf("topic = %s\n", p));
+        topics.names().get().forEach(p -> System.out.printf("topic = %s%n", p));
         
         DescribeClusterResult cluster = admin.describeCluster();
-        cluster.nodes().get().forEach(c -> System.out.printf("node = %s\n", c.toString()));
+        cluster.nodes().get().forEach(c -> System.out.printf("node = %s%n", c.toString()));
+
+        ListConsumerGroupsResult listConsumerGroupsResult = admin.listConsumerGroups();
+        //listConsumerGroupsResult.all().get().forEach(g -> System.out.printf("group = %s%n", g.groupId()));
+        listConsumerGroupsResult.all().get().forEach(g -> dumpOffsets(admin, g.groupId()));
+
     }
-    
+
+    private static void dumpOffsets(AdminClient admin, String groupId) {
+        try {
+            ListConsumerGroupOffsetsResult listConsumerGroupOffsetsResult = admin.listConsumerGroupOffsets(groupId);
+            listConsumerGroupOffsetsResult.partitionsToOffsetAndMetadata().get().forEach((t, o) -> System.out.printf("topic = %s [group = %s] (offset %d)%n", t.topic(), groupId, o.offset()));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
 }
