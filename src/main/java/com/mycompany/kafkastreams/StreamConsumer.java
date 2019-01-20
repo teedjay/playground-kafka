@@ -3,14 +3,12 @@ package com.mycompany.kafkastreams;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.StreamsBuilder;
+import org.apache.kafka.streams.StreamsConfig;
 import org.apache.kafka.streams.kstream.KStream;
 
 import java.time.LocalDateTime;
 import java.util.Properties;
 
-import static org.apache.kafka.clients.consumer.ConsumerConfig.AUTO_OFFSET_RESET_CONFIG;
-import static org.apache.kafka.clients.consumer.ConsumerConfig.ISOLATION_LEVEL_CONFIG;
-import static org.apache.kafka.clients.consumer.ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG;
 import static org.apache.kafka.streams.StreamsConfig.*;
 
 /**
@@ -29,11 +27,11 @@ public class StreamConsumer {
         props.put(DEFAULT_VALUE_SERDE_CLASS_CONFIG, Serdes.String().getClass());
         props.put(COMMIT_INTERVAL_MS_CONFIG, 1000);
 
-        props.put(AUTO_OFFSET_RESET_CONFIG, "earliest");
-        props.put(ISOLATION_LEVEL_CONFIG, "read_committed");
-        props.put(ENABLE_AUTO_COMMIT_CONFIG, "true");
+        // props.put(AUTO_OFFSET_RESET_CONFIG, "earliest");
+        // props.put(ISOLATION_LEVEL_CONFIG, "read_committed");
+        // props.put(ENABLE_AUTO_COMMIT_CONFIG, "true");
 
-        //props.put(StreamsConfig.PROCESSING_GUARANTEE_CONFIG, StreamsConfig.EXACTLY_ONCE);
+        props.put(StreamsConfig.PROCESSING_GUARANTEE_CONFIG, StreamsConfig.EXACTLY_ONCE);
 
         StreamsBuilder builder = new StreamsBuilder();
 
