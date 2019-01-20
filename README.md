@@ -23,6 +23,16 @@ docker run -d \
            blacktop/kafka
 ```
 
+To run the same on a server change the host name to reflect :
+```
+docker run -d \
+           --name kafka \
+           -p 9092:9092 \
+           -e KAFKA_ADVERTISED_HOST_NAME=er-ts-appqa04.os.eon.no \
+           -e KAFKA_CREATE_TOPICS="test-topic:1:1" \
+           blacktop/kafka
+```
+           
 More info about Kafka can be found in the [Kafka Documentation](https://kafka.apache.org/documentation/)
 
 When the Docker container has started you can start and stop as needed. 

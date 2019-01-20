@@ -4,6 +4,7 @@ import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.common.TopicPartition;
 
+import java.time.LocalDateTime;
 import java.util.Collections;
 
 import static java.time.Duration.ofSeconds;
@@ -29,7 +30,7 @@ public class TestConsumer {
                 firstTimeReset = false;
                 consumer.seekToBeginning(Collections.singleton(new TopicPartition(KafkaIntializer.TEST_TOPIC, 0)));
             }
-            System.out.println("Polling ...");
+            System.out.println("Polling ... @ " + LocalDateTime.now());
             records.records(new TopicPartition(KafkaIntializer.TEST_TOPIC, 0)).forEach(
                     r -> { System.out.printf("offset = %d, key = %s, value = %s\n", r.offset(), r.key(), r.value().substring(0, 10)); }
                     );

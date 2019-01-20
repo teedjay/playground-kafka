@@ -18,13 +18,12 @@ public class AdminClientTest {
         AdminClient admin = AdminClient.create(config);
         
         ListTopicsResult topics = admin.listTopics();
-        topics.names().get().forEach(p -> System.out.printf("topic = %s%n", p));
+        topics.names().get().forEach(p -> System.out.printf("topics = %s%n", p));
         
         DescribeClusterResult cluster = admin.describeCluster();
-        cluster.nodes().get().forEach(c -> System.out.printf("node = %s%n", c.toString()));
+        cluster.nodes().get().forEach(c -> System.out.printf("nodes = %s%n", c.toString()));
 
         ListConsumerGroupsResult listConsumerGroupsResult = admin.listConsumerGroups();
-        //listConsumerGroupsResult.all().get().forEach(g -> System.out.printf("group = %s%n", g.groupId()));
         listConsumerGroupsResult.all().get().forEach(g -> dumpOffsets(admin, g.groupId()));
 
     }
@@ -37,6 +36,5 @@ public class AdminClientTest {
             e.printStackTrace();
         }
     }
-
 
 }

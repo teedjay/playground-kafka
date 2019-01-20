@@ -43,11 +43,11 @@ public class TestProducer {
     }
     
     public static void main(String[] args) {
-        int messagesToSend = 10;
-        int messagesSize = 1024;
         long nanosStart = System.nanoTime();
         TestProducer tp = new TestProducer();
         long nanosProducer = System.nanoTime();
+        int messagesToSend = 10;
+        int messagesSize = 1024;
         tp.send(messagesToSend, messagesSize);
         long nanosFinished = System.nanoTime();
         long startProducer = (nanosProducer - nanosStart) / 1000000;
