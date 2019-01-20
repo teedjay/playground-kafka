@@ -1,53 +1,58 @@
 package com.mycompany.kafkastreams;
 
-import java.nio.CharBuffer;
-import java.util.Properties;
 import org.apache.kafka.clients.producer.KafkaProducer;
-import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
+import org.apache.kafka.common.KafkaException;
+import org.apache.kafka.common.errors.AuthorizationException;
+import org.apache.kafka.common.errors.OutOfOrderSequenceException;
+import org.apache.kafka.common.errors.ProducerFencedException;
+
+import java.nio.CharBuffer;
+import java.time.LocalDateTime;
 
 /**
- * Produces messages and sends to Kafka topic
+ * Produces messages and sends to Kafka topic using transaction for exactly-once-semantics
  *
  * @author thore
  */
 public class TestProducer {
 
-    private final Properties props;
+    private final KafkaProducer<String, String> producer;
 
     public TestProducer() {
-        props = new Properties();
-        props.put("bootstrap.servers", "localhost:9092");
-        props.put("acks", "all");
-        props.put("retries", 0);
-        props.put("batch.size", 16384);
-        props.put("linger.ms", 1);
-        props.put("buffer.memory", 33554432);   
-        props.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer");
-        props.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer");
+        producer = KafkaIntializer.createKafkaProducer();
+        producer.initTransactions();
     }
 
-    public void send(int number) {
-        String longText = CharBuffer.allocate(16384).toString().replace('\0', '@');
-        System.out.println("Number of bytes pr msg : " + longText.getBytes().length);
-        try (Producer<String, String> producer = new KafkaProducer<>(props)) {
-            for(int i = 0; i < number; i++)
-                producer.send(new ProducerRecord<String, String>("test-topic", Integer.toString(i), longText));
+    public void send(int number, int length) {
+        try {
+            producer.beginTransaction();
+            String longText = CharBuffer.allocate(length).toString().replace('\0', '@');
+            System.out.printf("Sending %d messages of %d bytes each%n", number, longText.getBytes().length);
+            String prefix = LocalDateTime.now().toString() + "_";
+            for (int i = 0; i < number; i++) producer.send(new ProducerRecord<>(KafkaIntializer.TEST_TOPIC, prefix + i, longText));
+            producer.commitTransaction();
+        } catch (ProducerFencedException | OutOfOrderSequenceException | AuthorizationException e) {
+            // We can't recover from these exceptions, so our only option is to close the producer and exit.
+            producer.close();
+        } catch (KafkaException e) {
+            // For all other exceptions, just abort the transaction and try again.
+            producer.abortTransaction();
         }
+        producer.close();
     }
     
     public static void main(String[] args) {
-        int numbersToSend = 100;
+        int messagesToSend = 10;
+        int messagesSize = 1024;
         long nanosStart = System.nanoTime();
         TestProducer tp = new TestProducer();
         long nanosProducer = System.nanoTime();
-        tp.send(numbersToSend);
+        tp.send(messagesToSend, messagesSize);
         long nanosFinished = System.nanoTime();
         long startProducer = (nanosProducer - nanosStart) / 1000000;
         long sendMessages = (nanosFinished - nanosProducer) / 1000000;
-        System.out.printf("Startup %dms, sending %d msgs in %dms\n", startProducer, numbersToSend, sendMessages);
+        System.out.printf("Startup %dms, sending %d msgs in %dms (total %d bytes)%n", startProducer, messagesToSend, sendMessages, 0L + messagesSize * messagesToSend);
     }
     
-    
-
 }

@@ -1,5 +1,5 @@
 # playground-kafka
-Small tests for Kafka 0.11 consumer api and streaming api, 
+Small tests for Kafka 2.1 consumer api and streaming api, 
 showing how to send, pull and stream messages using Java 8.
 
 Kafka 0.11 has some nice new features like exactly-once semantics

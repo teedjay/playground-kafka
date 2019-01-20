@@ -1,11 +1,12 @@
 package com.mycompany.kafkastreams;
 
-import java.util.Properties;
-import java.util.concurrent.ExecutionException;
 import org.apache.kafka.clients.admin.AdminClient;
 import org.apache.kafka.clients.admin.AdminClientConfig;
 import org.apache.kafka.clients.admin.DescribeClusterResult;
 import org.apache.kafka.clients.admin.ListTopicsResult;
+
+import java.util.Properties;
+import java.util.concurrent.ExecutionException;
 
 /**
  * Connects to the Kafka broker and list available topics and cluster topology
@@ -16,7 +17,7 @@ public class AdminClientTest {
     
     public static void main(String[] args) throws InterruptedException, ExecutionException {
         Properties config = new Properties();
-        config.put(AdminClientConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
+        config.put(AdminClientConfig.BOOTSTRAP_SERVERS_CONFIG, "er-ts-appqa04.os.eon.no:9092");
         AdminClient admin = AdminClient.create(config);
         
         ListTopicsResult topics = admin.listTopics();
