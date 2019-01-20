@@ -9,6 +9,9 @@ import org.apache.kafka.common.errors.ProducerFencedException;
 
 import java.nio.CharBuffer;
 import java.time.LocalDateTime;
+import java.util.Properties;
+
+import static org.apache.kafka.clients.producer.ProducerConfig.*;
 
 /**
  * Produces messages and sends to Kafka topic using transaction for exactly-once-semantics
@@ -17,10 +20,18 @@ import java.time.LocalDateTime;
  */
 public class TestProducer {
 
+    private static final String THE_TOPIC = "test-topic";
     private final KafkaProducer<String, String> producer;
 
     public TestProducer() {
-        producer = KafkaIntializer.createKafkaProducer();
+        // https://kafka.apache.org/20/javadoc/org/apache/kafka/clients/producer/KafkaProducer.html
+        Properties props = new Properties();
+        props.put(BOOTSTRAP_SERVERS_CONFIG, "er-ts-appqa04.os.eon.no:9092");
+        props.put(TRANSACTIONAL_ID_CONFIG, "my-trans-id");
+        props.put(ENABLE_IDEMPOTENCE_CONFIG, "true");
+        props.put(KEY_SERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.StringSerializer");
+        props.put(VALUE_SERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.StringSerializer");
+        producer = new KafkaProducer<>(props);
         producer.initTransactions();
     }
 
@@ -30,7 +41,7 @@ public class TestProducer {
             String longText = CharBuffer.allocate(length).toString().replace('\0', '@');
             System.out.printf("Sending %d messages of %d bytes each%n", number, longText.getBytes().length);
             String prefix = LocalDateTime.now().toString() + "_";
-            for (int i = 0; i < number; i++) producer.send(new ProducerRecord<>(KafkaIntializer.TEST_TOPIC, prefix + i, longText));
+            for (int i = 0; i < number; i++) producer.send(new ProducerRecord<>(THE_TOPIC, prefix + i, longText));
             producer.commitTransaction();
         } catch (ProducerFencedException | OutOfOrderSequenceException | AuthorizationException e) {
             // We can't recover from these exceptions, so our only option is to close the producer and exit.

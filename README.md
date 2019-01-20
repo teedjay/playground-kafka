@@ -19,7 +19,7 @@ docker run -d \
            --name kafka \
            -p 9092:9092 \
            -e KAFKA_ADVERTISED_HOST_NAME=localhost \
-           -e KAFKA_CREATE_TOPICS="test-topic:1:1" \
+           -e KAFKA_CREATE_TOPICS="test-topic:1:1,topic-a:1:1,topic-b:1:1" \
            blacktop/kafka
 ```
 
@@ -49,8 +49,8 @@ There are two consumer examples, they connect to the broker using different grou
 so they will both receive all messages and they can be run in parallel.
 
 - [ ] AdminClientTest, connects to broker and list topics and cluster info
+- [ ] TestConsumer, connects to broker and pulls messages
 - [ ] TestProducer, connects to broker and send x messages of y size
-- [ ] PollConsumer, connects to broker and pulls messages
 - [ ] StreamConsumer, connects to broker and streams messages
 
 
