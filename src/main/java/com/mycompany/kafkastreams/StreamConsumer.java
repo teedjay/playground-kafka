@@ -38,7 +38,7 @@ public class StreamConsumer {
         StreamsBuilder builder = new StreamsBuilder();
 
         KStream<String, String> items = builder.stream(THE_TOPIC);
-        items.foreach((k,v) -> System.out.printf("[%s] = %s\n",k, v.substring(0, 10)));
+        items.foreach((k,v) -> System.out.printf("[%s] = %s\n",k, v.substring(0, 80)));
 
         KafkaStreams streams = new KafkaStreams(builder.build(), props);
 

@@ -19,7 +19,7 @@ import static org.apache.kafka.clients.consumer.ConsumerConfig.*;
  */
 public class TestConsumer {
 
-    private static final String THE_TOPIC = "test-topic";
+    private static final String THE_TOPIC = "logs";
     private final KafkaConsumer<String, String> consumer;
 
     public TestConsumer() {
@@ -44,10 +44,11 @@ public class TestConsumer {
             if (firstTimeReset) {
                 firstTimeReset = false;
                 consumer.seekToBeginning(Collections.singleton(new TopicPartition(THE_TOPIC, 0)));
+                //consumer.seek(new TopicPartition(THE_TOPIC, 0), 328682);
             }
             System.out.println("Polling ... @ " + LocalDateTime.now());
             records.records(new TopicPartition(THE_TOPIC, 0)).forEach(
-                    r -> { System.out.printf("offset = %d, key = %s, value = %s\n", r.offset(), r.key(), r.value().substring(0, 10)); }
+                    r -> { System.out.printf("offset = %d, key = %s, value = %s\n", r.offset(), r.key(), r.value()); }
                     );
         }
     }
